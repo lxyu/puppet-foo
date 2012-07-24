@@ -366,7 +366,7 @@ class foo (
       notify  => $foo::manage_service_autorestart,
       source  => $foo::source_dir,
       recurse => true,
-      purge   => $foo::source_dir_purge,
+      purge   => $foo::bool_source_dir_purge,
       replace => $foo::manage_file_replace,
       audit   => $foo::manage_audit,
     }
