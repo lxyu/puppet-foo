@@ -49,14 +49,14 @@ For detailed info about the logic and usage patterns of Example42 modules check 
 * Use custom sources for main config file 
 
         class { 'foo':
-          source => [ "puppet:///modules/lab42/foo/foo.conf-${hostname}" , "puppet:///modules/lab42/foo/foo.conf" ], 
+          source => [ "puppet:///modules/example42/foo/foo.conf-${hostname}" , "puppet:///modules/example42/foo/foo.conf" ], 
         }
 
 
 * Use custom source directory for the whole configuration dir
 
         class { 'foo':
-          source_dir       => 'puppet:///modules/lab42/foo/conf/',
+          source_dir       => 'puppet:///modules/example42/foo/conf/',
           source_dir_purge => false, # Set to true to purge any existing file not present in $source_dir
         }
 
@@ -69,7 +69,7 @@ For detailed info about the logic and usage patterns of Example42 modules check 
 * Automatically include a custom subclass
 
         class { 'foo':
-          my_class => 'foo::example42',
+          my_class => 'example42::my_foo',
         }
 
 
