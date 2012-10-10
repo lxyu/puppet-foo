@@ -329,9 +329,8 @@ class foo (
   }
 
   ### Managed resources
-  package { 'foo':
+  package { $foo::package:
     ensure => $foo::manage_package,
-    name   => $foo::package,
   }
 
   service { 'foo':
@@ -340,7 +339,7 @@ class foo (
     enable     => $foo::manage_service_enable,
     hasstatus  => $foo::service_status,
     pattern    => $foo::process,
-    require    => Package['foo'],
+    require    => Package[$foo::package],
   }
 
   file { 'foo.conf':
@@ -349,7 +348,7 @@ class foo (
     mode    => $foo::config_file_mode,
     owner   => $foo::config_file_owner,
     group   => $foo::config_file_group,
-    require => Package['foo'],
+    require => Package[$foo::package],
     notify  => $foo::manage_service_autorestart,
     source  => $foo::manage_file_source,
     content => $foo::manage_file_content,
@@ -362,7 +361,7 @@ class foo (
     file { 'foo.dir':
       ensure  => directory,
       path    => $foo::config_dir,
-      require => Package['foo'],
+      require => Package[$foo::package],
       notify  => $foo::manage_service_autorestart,
       source  => $foo::source_dir,
       recurse => true,
@@ -392,27 +391,31 @@ class foo (
 
   ### Service monitoring, if enabled ( monitor => true )
   if $foo::bool_monitor == true {
-    monitor::port { "foo_${foo::protocol}_${foo::port}":
-      protocol => $foo::protocol,
-      port     => $foo::port,
-      target   => $foo::monitor_target,
-      tool     => $foo::monitor_tool,
-      enable   => $foo::manage_monitor,
+    if $foo::port != '' {
+      monitor::port { "foo_${foo::protocol}_${foo::port}":
+        protocol => $foo::protocol,
+        port     => $foo::port,
+        target   => $foo::monitor_target,
+        tool     => $foo::monitor_tool,
+        enable   => $foo::manage_monitor,
+      }
     }
-    monitor::process { 'foo_process':
-      process  => $foo::process,
-      service  => $foo::service,
-      pidfile  => $foo::pid_file,
-      user     => $foo::process_user,
-      argument => $foo::process_args,
-      tool     => $foo::monitor_tool,
-      enable   => $foo::manage_monitor,
+    if $foo::service != '' {
+      monitor::process { 'foo_process':
+        process  => $foo::process,
+        service  => $foo::service,
+        pidfile  => $foo::pid_file,
+        user     => $foo::process_user,
+        argument => $foo::process_args,
+        tool     => $foo::monitor_tool,
+        enable   => $foo::manage_monitor,
+      }
     }
   }
 
 
   ### Firewall management, if enabled ( firewall => true )
-  if $foo::bool_firewall == true {
+  if $foo::bool_firewall == true and $foo::port != '' {
     firewall { "foo_${foo::protocol}_${foo::port}":
       source      => $foo::firewall_src,
       destination => $foo::firewall_dst,
