@@ -38,7 +38,7 @@ For detailed info about the logic and usage patterns of Example42 modules check 
           absent => true
         }
 
-* Enable auditing without without making changes on existing foo configuration files
+* Enable auditing without making changes on existing foo configuration files
 
         class { 'foo':
           audit_only => true
