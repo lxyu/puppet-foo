@@ -342,20 +342,6 @@ class foo (
     require    => Package[$foo::package],
   }
 
-  file { 'foo.conf':
-    ensure  => $foo::manage_file,
-    path    => $foo::config_file,
-    mode    => $foo::config_file_mode,
-    owner   => $foo::config_file_owner,
-    group   => $foo::config_file_group,
-    require => Package[$foo::package],
-    notify  => $foo::manage_service_autorestart,
-    source  => $foo::manage_file_source,
-    content => $foo::manage_file_content,
-    replace => $foo::manage_file_replace,
-    audit   => $foo::manage_audit,
-  }
-
   # The whole foo configuration directory can be recursively overriden
   if $foo::source_dir {
     file { 'foo.dir':
@@ -369,6 +355,19 @@ class foo (
       replace => $foo::manage_file_replace,
       audit   => $foo::manage_audit,
     }
+  } else {
+    file { 'foo.conf':
+      ensure  => $foo::manage_file,
+      path    => $foo::config_file,
+      mode    => $foo::config_file_mode,
+      owner   => $foo::config_file_owner,
+      group   => $foo::config_file_group,
+      require => Package[$foo::package],
+      notify  => $foo::manage_service_autorestart,
+      source  => $foo::manage_file_source,
+      content => $foo::manage_file_content,
+      replace => $foo::manage_file_replace,
+      audit   => $foo::manage_audit,
   }
 
 
